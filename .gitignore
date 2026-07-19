@@ -1,0 +1,12 @@
+.idea
+.gradle
+.kotlin
+.venv
+__pycache__
+.DS_Store
+.externalNativeBuild
+.cxx
+
+/local.properties
+/build
+/captures
