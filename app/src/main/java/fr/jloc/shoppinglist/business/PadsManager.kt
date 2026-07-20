@@ -286,7 +286,7 @@ class PadsManager private constructor(
             checkNotDeleting()
 
             if (syncDoneSignal != null) {
-                throw Error("Cannot delete synchronized data from remote while a synchronization is running.")
+                throw Exception("Cannot delete synchronized data from remote while a synchronization is running.")
             }
 
             val remote = RemotePadImpl(syncParams!!.url, syncParams!!.key)
@@ -320,7 +320,7 @@ class PadsManager private constructor(
         fun enqueueDbOperation(op: suspend () -> Unit) {
             checkNotDeleting()
             if (isSynchronizing) {
-                throw Error("Cannot enqueue new operations for a pad which is synchronizing.")
+                throw Exception("Cannot enqueue new operations for a pad which is synchronizing.")
             }
             doEnqueueDbOperation(op)
         }
@@ -428,7 +428,7 @@ class PadsManager private constructor(
     fun openPad(padId: String): PadHandle = synchronized(padManagers) {
         val pad = padManagers[padId]!!
         if (pad.held) {
-            throw Error("Pad already locked.")
+            throw Exception("Pad already locked.")
         }
         pad.held = true
         PadHandleImpl(pad)
