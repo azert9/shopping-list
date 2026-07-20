@@ -60,7 +60,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.qrcode.kotlin)
