@@ -1,4 +1,4 @@
-package fr.jloc.shoppinglist.ui.components
+package fr.jloc.shoppinglist.ui
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,24 +24,19 @@ import fr.jloc.shoppinglist.R
 @Preview(showBackground = true)
 @Composable
 fun CommonDialogPreview() {
-    CommonDialog(
-        title = "Title",
-        canCancel = true,
-        submitAction = {
-            Button(onClick = {}) {
-                Text(stringResource(R.string.dialog_submit_add))
-            }
-        },
-        tertiaryAction = {
-            TextButton(
-                // TODO(ux): do we really want this red color?
-                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error),
-                onClick = {},
-            ) {
-                Text(stringResource(R.string.dialog_submit_delete))
-            }
+    CommonDialog(title = "Title", canCancel = true, submitAction = {
+        Button(onClick = {}) {
+            Text(stringResource(R.string.dialog_submit_add))
         }
-    ) {
+    }, tertiaryAction = {
+        TextButton(
+            // TODO(ux): do we really want this red color?
+            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error),
+            onClick = {},
+        ) {
+            Text(stringResource(R.string.dialog_submit_delete))
+        }
+    }) {
         Text("Content.")
     }
 }
@@ -73,7 +68,9 @@ fun CommonDialog(
             ) {
                 if (title.isNotEmpty()) {
                     Text(
-                        modifier = Modifier.padding(bottom = 16.dp).testTag("dialog_title"),
+                        modifier = Modifier
+                            .padding(bottom = 16.dp)
+                            .testTag("dialog_title"),
                         text = title,
                         style = MaterialTheme.typography.headlineSmall,
                         color = MaterialTheme.colorScheme.onSurface,

@@ -1,12 +1,6 @@
-package fr.jloc.shoppinglist.ui.activities.adding_remote_pad
+package fr.jloc.shoppinglist.ui.screens.add_remote_pad
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -35,47 +29,27 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import fr.jloc.shoppinglist.R
-import fr.jloc.shoppinglist.ShoppingListApp
+import fr.jloc.shoppinglist.business.Pad
+import fr.jloc.shoppinglist.business.PadsManager
 import fr.jloc.shoppinglist.business.sync.SharingURI
 import fr.jloc.shoppinglist.business.sync.SyncError
-import fr.jloc.shoppinglist.ui.activities.main.MainActivity
 import fr.jloc.shoppinglist.ui.syncErrorMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AddingRemotePadActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            Screen(
-                intentURI = intent.data!!,
-                app = application as ShoppingListApp,
-                onContinue = {
-                    val intent = Intent(
-                        this,
-                        MainActivity::class.java,
-                    )
-                    startActivity(intent)
-                },
-            )
-        }
-    }
-}
-
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun Screen(
-    intentURI: Uri,
-    app: ShoppingListApp,
-    onContinue: () -> Unit,
+fun AddRemotePadScreen(
+    sharingURI: String,
+    padsManager: PadsManager,
+    onContinue: ((pad: Pad?) -> Unit),
 ) {
 
     var error by remember { mutableStateOf<String?>(null) }
     val res = LocalResources.current
 
-    LaunchedEffect(intentURI) {
+    LaunchedEffect(error, sharingURI) {
 
         if (error != null) {
             return@LaunchedEffect
@@ -84,21 +58,24 @@ fun Screen(
         withContext(Dispatchers.IO) {
 
             val uri = try {
-                SharingURI.decode(intentURI.toString())
+                SharingURI.decode(sharingURI)
             } catch (_: IllegalArgumentException) {
                 error = res.getString(R.string.error_invalid_sharing_uri)
                 return@withContext
             }
 
+            // TODO(ux): don't add the pad if we already have it
+
             try {
-                val padId = app.padsManager().createPad(uri.padName, uri.syncParams)
+                val padId = padsManager.createPad(uri.padName, uri.syncParams)
 
-                app.padsManager().startPadSync(padId)
-
-                app.setLastSelectedPad(padId)
+                padsManager.openPad(padId).use { pad ->
+                    pad.startSync()
+                    pad.waitEndOfSync()?.let { throw it }
+                }
 
                 this.launch(Dispatchers.Main) {
-                    onContinue()
+                    onContinue(Pad(id = padId, name = uri.padName))
                 }
             } catch (e: SyncError) {
                 Log.e(null, "failed to add remote pad", e)
@@ -112,7 +89,7 @@ fun Screen(
 
     val errorCached = error
     if (errorCached != null) {
-        ErrorScreen(errorCached, onDismiss = { onContinue() })
+        ErrorScreen(errorCached, onDismiss = { onContinue(null) })
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -123,13 +100,16 @@ fun Screen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun ErrorScreenPreview() {
-    ErrorScreen("Something went wrong!\nPlease try again later.")
+    ErrorScreen(
+        "Something went wrong!\nPlease try again later.",
+        onDismiss = {},
+    )
 }
 
 @Composable
 private fun ErrorScreen(
     message: String,
-    onDismiss: (() -> Unit)? = null,
+    onDismiss: (() -> Unit),
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.align(Alignment.Center)) {
@@ -148,7 +128,7 @@ private fun ErrorScreen(
             )
         }
         Button(
-            onClick = { onDismiss?.invoke() },
+            onClick = onDismiss,
             Modifier
                 .align(Alignment.BottomEnd)
                 .padding(42.dp),

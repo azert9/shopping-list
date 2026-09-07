@@ -45,7 +45,7 @@
     <string name="keep_on_server_checkbox_label">Ne pas supprimer du serveur</string>
     <string name="error_invalid_sharing_uri">Ce lien de partage n\'est pas valide.</string>
     <string name="navigate_back">Retour</string>
-    <string name="activity_about_title">À propos</string>
+    <string name="about_screen_title">À propos</string>
     <string name="privacy_policy">Politique de confidentialité</string>
     <string name="terms_of_use">Conditions générales d\'utilisation</string>
     <string name="source_code">Code source</string>
@@ -54,4 +54,6 @@
     <string name="welcome_message_2">En utilisant cette application, vous acceptez la %s et les %s.</string>
     <string name="dialog_submit_accept">Accepter</string>
     <string name="dialog_submit_refuse">Refuser</string>
+    <string name="edit_item_dialog_title">Modifier l\'article</string>
+    <string name="share_pad_screen_title">Partager la liste</string>
 </resources>

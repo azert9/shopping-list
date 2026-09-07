@@ -1,4 +1,4 @@
-package fr.jloc.shoppinglist.ui.components
+package fr.jloc.shoppinglist.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

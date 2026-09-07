@@ -1,7 +1,9 @@
 package fr.jloc.shoppinglist.business.sync
 
+import kotlinx.serialization.Serializable
 import java.lang.Exception
 
+@Serializable
 class SyncError : Exception {
 
     val code: Code

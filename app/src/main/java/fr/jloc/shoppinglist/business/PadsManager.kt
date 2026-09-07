@@ -433,17 +433,4 @@ class PadsManager private constructor(
         pad.held = true
         PadHandleImpl(pad)
     }
-
-    /** Start a pad synchronization, if the pad is not open (see [openPad]).
-     * @return True iif the pad was not locked.
-     */
-    fun startPadSync(padId: String) = synchronized(padManagers) {
-        val pad = padManagers[padId]!!
-        if (pad.held) {
-            false
-        } else {
-            pad.startSync()
-            true
-        }
-    }
 }

@@ -1,5 +1,12 @@
 package fr.jloc.shoppinglist
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
@@ -16,8 +23,11 @@ import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.test.swipeRight
 import androidx.test.platform.app.InstrumentationRegistry
-import fr.jloc.shoppinglist.ui.activities.main.Screen
+import fr.jloc.shoppinglist.FakeApp.Companion.create
+import fr.jloc.shoppinglist.business.App
+import fr.jloc.shoppinglist.ui.RootComponent
 import org.junit.Test
 import org.junit.Rule
 
@@ -68,7 +78,16 @@ class UiTest {
         //
 
         composeTestRule.setContent {
-            Screen()
+            var app by remember { mutableStateOf<App?>(null) }
+            val context = LocalContext.current
+            val coroutineScope = rememberCoroutineScope()
+            LaunchedEffect(Unit) {
+                app = create(context, coroutineScope)
+            }
+
+            app?.let { app ->
+                RootComponent(app = app, sharingURI = null)
+            }
         }
 
         // when opening the app, we get a dialog for creating the first shopping list
@@ -90,14 +109,13 @@ class UiTest {
         onNodeWithText(R.string.dialog_cancel).assertIsDisplayed()
         click(R.string.dialog_submit_create)
 
-        composeTestRule.onAllNodesWithText("Shopping List 1").assertCountEquals(2)
-        composeTestRule.onAllNodesWithText("Shopping List 2").assertCountEquals(1)
-
-        composeTestRule.onNodeWithTag("drawer").performTouchInput {
-            swipeLeft()
-        }
+        composeTestRule.onAllNodesWithText("Shopping List 1").assertCountEquals(1)
+        composeTestRule.onAllNodesWithText("Shopping List 2").assertCountEquals(2)
 
         // creating an element in the first list
+
+        composeTestRule.onNodeWithTag("drawer").performTouchInput { swipeRight() }
+        composeTestRule.onNodeWithText("Shopping List 1").performClick()
 
         clickImg(R.string.action_add_pad_item)
 
