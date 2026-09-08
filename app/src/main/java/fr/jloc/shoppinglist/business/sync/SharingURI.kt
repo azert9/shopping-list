@@ -11,9 +11,8 @@ data class SharingURI(val padName: String, val syncParams: PadSyncParams) {
 
     companion object {
 
-        // TODO: check that all exceptions thrown are IllegalArgumentException
         /** @throws IllegalArgumentException if the input is not a valid sharing URI. */
-        fun decode(uri: String): SharingURI = run {
+        fun decode(uri: String): SharingURI = try {
 
             val prefix = "https://shopping-list.jloc.fr/shared#"
             require(uri.startsWith(prefix, ignoreCase = true))
@@ -30,6 +29,8 @@ data class SharingURI(val padName: String, val syncParams: PadSyncParams) {
                     key = PadKey.fromBytes(BASE64.decode(fields[1])),
                 ),
             )
+        } catch (e: Exception) {
+            throw IllegalArgumentException("failed to decode sharing URI", e)
         }
     }
 
