@@ -58,4 +58,8 @@
     <string name="dialog_submit_refuse">Refuse</string>
     <string name="edit_item_dialog_title">Edit item</string>
     <string name="share_pad_screen_title">Sharing Pad</string>
+    <string name="info_icon">info</string>
+    <string name="share_pad_instructions_1">"Scan using a regular qr-code or camera app, or "</string>
+    <string name="share_pad_instructions_2">copy link</string>
+    <string name="sharing_link_label">"Shopping List Sharing "</string>
 </resources>

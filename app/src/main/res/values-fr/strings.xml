@@ -56,4 +56,8 @@
     <string name="dialog_submit_refuse">Refuser</string>
     <string name="edit_item_dialog_title">Modifier l\'article</string>
     <string name="share_pad_screen_title">Partager la liste</string>
+    <string name="info_icon">info</string>
+    <string name="share_pad_instructions_1">"Scannez avec une application qr-code classique, ou "</string>
+    <string name="share_pad_instructions_2">copiez le lien</string>
+    <string name="sharing_link_label">Partage de liste de course</string>
 </resources>
