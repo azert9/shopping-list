@@ -8,17 +8,17 @@ kotlinxSerializationJson = "1.11.0"
 lifecycleRuntimeKtx = "2.11.0"
 activityCompose = "1.13.0"
 kotlin = "2.4.10"
-composeBom = "2026.08.00"  # https://developer.android.com/develop/ui/compose/bom/bom-mapping
+composeBom = "2026.09.00"  # https://developer.android.com/develop/ui/compose/bom/bom-mapping
 lifecycleViewmodelCompose = "2.11.0"
 ksp = "2.3.6"
-foundation = "1.12.0"
-composeMaterial3 = "1.5.0-alpha27"  # TODO: ideally, try using the version provided in the BOM
+foundation = "1.12.1"
+composeMaterial3 = "1.5.0-alpha28"  # TODO: ideally, try using the version provided in the BOM
 coreSplashscreen = "1.2.0"
 qrcodeKotlin = "4.5.0"
 datastorePreferences = "1.2.1"
 navigation3Runtime = "1.1.7"
 navigation3Ui = "1.1.7"
-foundationLayout = "1.12.0"
+foundationLayout = "1.12.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
