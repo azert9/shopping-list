@@ -2,6 +2,8 @@ package fr.jloc.shoppinglist.ui.screens.share_pad
 
 import android.content.ClipData
 import android.graphics.BitmapFactory
+import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +23,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
@@ -64,6 +67,8 @@ private fun SharePadDialogBody(
 
     val coroutineScope = rememberCoroutineScope()
     val clipboard = LocalClipboard.current
+    val context = LocalContext.current
+    val clipboardToastText = stringResource(R.string.copied_link)
 
     Box(Modifier.fillMaxSize() then modifier) {
         Column(
@@ -93,6 +98,10 @@ private fun SharePadDialogBody(
                 pushLink(LinkAnnotation.Clickable(tag = stringResource(R.string.sharing_link_label)) {
                     coroutineScope.launch {
                         clipboard.setClipEntry(ClipEntry(ClipData.newRawUri("URL", uri.toUri())))
+                        // starting from android 13, a visual feedback is already provided by the system
+                        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                            Toast.makeText(context, clipboardToastText, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 })
                 withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary)) {

@@ -62,4 +62,5 @@
     <string name="share_pad_instructions_1">"Scan using a regular qr-code or camera app, or "</string>
     <string name="share_pad_instructions_2">copy link</string>
     <string name="sharing_link_label">"Shopping List Sharing "</string>
+    <string name="copied_link">Copied link</string>
 </resources>

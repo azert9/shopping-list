@@ -60,4 +60,5 @@
     <string name="share_pad_instructions_1">"Scannez avec une application qr-code classique, ou "</string>
     <string name="share_pad_instructions_2">copiez le lien</string>
     <string name="sharing_link_label">Partage de liste de course</string>
+    <string name="copied_link">Lien copié</string>
 </resources>
