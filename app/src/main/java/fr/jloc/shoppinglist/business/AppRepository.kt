@@ -32,6 +32,8 @@ data class PadItemContent(
 interface AppRepository {
     suspend fun getPads(): List<Pad>
 
+    suspend fun findPadBySyncParams(syncParams: PadSyncParams): Pad?
+
     suspend fun addPad(id: String, name: String, syncParams: PadSyncParams? = null): Pad
 
     suspend fun deletePad(padId: String)

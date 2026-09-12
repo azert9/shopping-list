@@ -433,4 +433,7 @@ class PadsManager private constructor(
         pad.held = true
         PadHandleImpl(pad)
     }
+
+    suspend fun findPadBySyncParams(syncParams: PadSyncParams): Pad? =
+        db.findPadBySyncParams(syncParams)
 }

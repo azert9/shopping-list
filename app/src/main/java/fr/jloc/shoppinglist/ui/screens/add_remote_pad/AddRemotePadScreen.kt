@@ -64,18 +64,18 @@ fun AddRemotePadScreen(
                 return@withContext
             }
 
-            // TODO(ux): don't add the pad if we already have it
-
             try {
-                val padId = padsManager.createPad(uri.padName, uri.syncParams)
-
-                padsManager.openPad(padId).use { pad ->
-                    pad.startSync()
-                    pad.waitEndOfSync()?.let { throw it }
+                val pad = padsManager.findPadBySyncParams(uri.syncParams) ?: run {
+                    val padId = padsManager.createPad(uri.padName, uri.syncParams)
+                    padsManager.openPad(padId).use { pad ->
+                        pad.startSync()
+                        pad.waitEndOfSync()?.let { throw it }
+                    }
+                    Pad(id = padId, name = uri.padName)
                 }
 
                 this.launch(Dispatchers.Main) {
-                    onContinue(Pad(id = padId, name = uri.padName))
+                    onContinue(pad)
                 }
             } catch (e: SyncError) {
                 Log.e(null, "failed to add remote pad", e)

@@ -63,6 +63,30 @@ class SqliteAppRepository private constructor(private val dbOpenHelper: DBOpenHe
         return out
     }
 
+    override suspend fun findPadBySyncParams(syncParams: PadSyncParams): Pad? {
+        val db = dbOpenHelper.readableDatabase
+        db.query(
+            "pads LEFT JOIN pad_sync_params ON pads.id = pad_sync_params.id",
+            arrayOf("pads.id", "name"),
+            "key = unhex(?) AND url = ?",
+            arrayOf(syncParams.key.toBytes().toHexString(), syncParams.url),
+            null,
+            null,
+            null,
+        ).use { cursor ->
+            val idCol = cursor.getColumnIndexOrThrow("id")
+            val nameCol = cursor.getColumnIndexOrThrow("name")
+            return if (cursor.moveToNext()) {
+                Pad(
+                    id = cursor.getString(idCol),
+                    name = cursor.getString(nameCol),
+                )
+            } else {
+                null
+            }
+        }
+    }
+
     override suspend fun addPad(
         id: String,
         name: String,

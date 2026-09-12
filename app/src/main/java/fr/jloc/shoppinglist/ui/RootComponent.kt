@@ -127,7 +127,9 @@ private fun RootComponentInner(
                 onContinue = { pad ->
                     popBackStack()
                     if (pad != null) {
-                        pads = pads.plus(pad)
+                        if (!pads.any { it.id == pad.id }) {
+                            pads = pads.plus(pad)
+                        }
                         Route.Pad(selectedPadId = pad.id).navigate(backStack)
                     }
                 },
