@@ -83,7 +83,7 @@ class PadViewModel(
             val initialName: String,
             val initialNote: String,
             /** List of item name suggestions. */
-            val suggestions: List<String>,
+            val suggestions: List<Item>,
             /** Is this a new item, or are we updating an existing one. */
             val updating: Boolean,
             val dismiss: () -> Unit,
@@ -128,7 +128,7 @@ class PadViewModel(
         _dialog.value = Dialog.EditItem(
             initialName = "",
             initialNote = "",
-            suggestions = items.checked.map { it.name },
+            suggestions = items.checked,
             updating = false,
             dismiss = { _dialog.value = null },
             submit = { name, note ->
@@ -182,7 +182,7 @@ class PadViewModel(
         _dialog.value = Dialog.EditItem(
             initialName = item.name,
             initialNote = item.note,
-            suggestions = items.checked.map { it.name },
+            suggestions = items.checked,
             updating = true,
             dismiss = { _dialog.value = null },
             submit = { name, note ->

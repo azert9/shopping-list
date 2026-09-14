@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.foundation.text.input.setTextAndSelectAll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -630,7 +631,7 @@ private fun EditItemDialogPreview() {
 
 @Composable
 private fun EditItemDialog(
-    suggestions: List<String>,
+    suggestions: List<PadViewModel.Item>,
     updating: Boolean,
     initialName: String,
     initialNote: String,
@@ -639,6 +640,7 @@ private fun EditItemDialog(
     onDelete: (() -> Unit)? = null,
 ) {
     // TODO(ux): preserve text fields on configuration change
+    // TODO(ux): fix text field focus when the dialog appears (sometimes no focus, sometimes the second field is focused)
 
     val nameTextFieldState = rememberTextFieldState()
     val nameTextFieldValue = nameTextFieldState.text.toString()
@@ -693,7 +695,7 @@ private fun EditItemDialog(
         },
     ) {
         TextFieldWithSuggestions(
-            suggestions = suggestions,
+            suggestionPool = suggestions.map { it.name },
             state = nameTextFieldState,
             modifier = Modifier
                 .fillMaxWidth()
@@ -706,7 +708,15 @@ private fun EditItemDialog(
                 },
             label = { Text(stringResource(R.string.pad_item_name_input_label)) },
             isError = !nameTextFieldOk && nameTextFieldLifecycle == 2,
-            onSubmit = {
+            onSubmit = { input, fromSuggestions ->
+                val fromItem = if (fromSuggestions) {
+                    suggestions.find { it.name == input }
+                } else {
+                    null
+                }
+                if (fromItem != null) {
+                    noteTextFieldState.setTextAndSelectAll(fromItem.note)
+                }
                 noteTextFieldFocusRequester.requestFocus()
             },
         )
