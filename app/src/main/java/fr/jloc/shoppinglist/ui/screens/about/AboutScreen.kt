@@ -1,6 +1,5 @@
 package fr.jloc.shoppinglist.ui.screens.about
 
-import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,7 +8,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,9 +29,9 @@ fun AboutScreen(onDismiss: () -> Unit) {
             modifier = Modifier
                 .padding(contentPadding)
                 .fillMaxSize(),
-            color = MaterialTheme.colorScheme.surfaceContainerLowest,
+            color = MaterialTheme.colorScheme.surface,
         ) {
-            Column(Modifier.padding(8.dp, 16.dp)) {
+            Column(Modifier.padding(8.dp, 24.dp)) {
 
                 val appName = stringResource(R.string.app_name)
                 val license = stringResource(R.string.license)
