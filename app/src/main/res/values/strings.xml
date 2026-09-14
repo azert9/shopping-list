@@ -63,4 +63,5 @@
     <string name="share_pad_instructions_2">copy link</string>
     <string name="sharing_link_label">"Shopping List Sharing "</string>
     <string name="copied_link">Copied link</string>
+    <string name="license">MIT license</string>
 </resources>

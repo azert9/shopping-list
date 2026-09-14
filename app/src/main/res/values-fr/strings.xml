@@ -61,4 +61,5 @@
     <string name="share_pad_instructions_2">copiez le lien</string>
     <string name="sharing_link_label">Partage de liste de course</string>
     <string name="copied_link">Lien copié</string>
+    <string name="license">license MIT</string>
 </resources>

@@ -1,14 +1,19 @@
 package fr.jloc.shoppinglist.ui.screens.about
 
+import android.os.Build
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import fr.jloc.shoppinglist.BuildConfig
 import fr.jloc.shoppinglist.R
 import fr.jloc.shoppinglist.ui.IconLink
 import fr.jloc.shoppinglist.ui.screens.SecondaryScreen
@@ -30,8 +35,13 @@ fun AboutScreen(onDismiss: () -> Unit) {
         ) {
             Column(Modifier.padding(8.dp, 16.dp)) {
 
-                // TODO: license, version
-
+                val appName = stringResource(R.string.app_name)
+                val license = stringResource(R.string.license)
+                Text(
+                    "$appName v${BuildConfig.VERSION_NAME} ($license)",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
                 IconLink(
                     R.drawable.ic_privacy,
                     R.string.privacy_policy,
