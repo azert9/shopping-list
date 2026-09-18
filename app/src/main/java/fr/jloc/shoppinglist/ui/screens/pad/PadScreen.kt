@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.foundation.text.input.setTextAndSelectAll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -68,6 +67,7 @@ import fr.jloc.shoppinglist.business.sync.SyncError
 import fr.jloc.shoppinglist.ui.CommonDialog
 import fr.jloc.shoppinglist.ui.EditPadDialog
 import fr.jloc.shoppinglist.ui.TextFieldWithSuggestions
+import fr.jloc.shoppinglist.ui.isFirstComposition
 import fr.jloc.shoppinglist.ui.syncErrorMessage
 import kotlinx.coroutines.launch
 import kotlin.collections.isNotEmpty
@@ -487,7 +487,6 @@ private fun PadContent(
     Box(modifier) {
 
         if (uncheckedItems.isEmpty() && checkedItems.isEmpty()) {
-            // TODO(ux): hide while loading
             Text(
                 stringResource(R.string.empty_pad_placeholder),
                 style = MaterialTheme.typography.titleMedium,
@@ -639,21 +638,16 @@ private fun EditItemDialog(
     onSubmit: ((name: String, note: String) -> Unit)? = null,
     onDelete: (() -> Unit)? = null,
 ) {
-    // TODO(ux): preserve text fields on configuration change
-    // TODO(ux): fix text field focus when the dialog appears (sometimes no focus, sometimes the second field is focused)
-
-    val nameTextFieldState = rememberTextFieldState()
+    val nameTextFieldState = rememberTextFieldState(initialText = initialName)
     val nameTextFieldValue = nameTextFieldState.text.toString()
     val nameTextFieldFocusRequester = remember { FocusRequester() }
     val nameTextFieldOk = nameTextFieldState.text.isNotBlank()
     var nameTextFieldLifecycle by remember { mutableIntStateOf(0) }
 
-    val noteTextFieldState = rememberTextFieldState()
+    val noteTextFieldState = rememberTextFieldState(initialText = initialNote)
     val noteTextFieldFocusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(Unit) {
-        nameTextFieldState.setTextAndPlaceCursorAtEnd(initialName)
-        noteTextFieldState.setTextAndPlaceCursorAtEnd(initialNote)
+    if (isFirstComposition()) {
         if (initialName.isEmpty()) {
             nameTextFieldFocusRequester.requestFocus()
         } else {

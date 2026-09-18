@@ -1,8 +1,10 @@
 package fr.jloc.shoppinglist.ui
 
 import android.content.res.Resources
+import androidx.annotation.MainThread
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalResources
 import fr.jloc.shoppinglist.R
 import fr.jloc.shoppinglist.business.sync.SyncError
@@ -20,3 +22,15 @@ fun syncErrorMessage(error: SyncError, res: Resources): String = run {
 @Composable
 @ReadOnlyComposable
 fun syncErrorMessage(error: SyncError): String = syncErrorMessage(error, LocalResources.current)
+
+private var isFirstCompositionSerial: Long = 0;
+
+/** `LaunchedEffect(Unit) { ... }` has the disadvantage of being called again after activity recreation.
+ * This function leverages `rememberSaveable()` to work around this limitation. */
+@Composable
+@MainThread
+fun isFirstComposition(): Boolean {
+    val a = isFirstCompositionSerial++
+    val b = rememberSaveable { a }
+    return a == b
+}
