@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.saveable.rememberSerializable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -72,8 +73,8 @@ private fun RootComponentInner(
     var pads by remember { mutableStateOf(app.pads.pads) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
-    var creatingPad by remember { mutableStateOf(false) }
-    var conditionsAccepted by remember { mutableStateOf(app.conditionsAccepted) }
+    var creatingPad by rememberSaveable { mutableStateOf(false) }
+    var conditionsAccepted by rememberSaveable() { mutableStateOf(app.conditionsAccepted) }
 
     val navEntryProvider = entryProvider {
 
