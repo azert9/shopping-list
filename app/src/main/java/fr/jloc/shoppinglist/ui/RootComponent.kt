@@ -68,7 +68,7 @@ private fun RootComponentInner(
         }
     }
 
-    //
+    // entry provider
 
     var pads by remember { mutableStateOf(app.pads.pads) }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -137,6 +137,8 @@ private fun RootComponentInner(
             )
         }
     }
+
+    // main layout
 
     ModalNavigationDrawer(
         modifier = Modifier.testTag("drawer"),

@@ -15,25 +15,22 @@ import kotlinx.coroutines.launch
 
 class PadViewModel(
     private val pad: PadsManager.PadHandle,
-    private val onPadRenamed: (name: String) -> Unit,
-    private val onPadDeleted: () -> Unit,
-    private val onSharePad: (uri: SharingURI) -> Unit,
+    var onPadRenamed: (name: String) -> Unit,
+    var onPadDeleted: () -> Unit,
+    var onSharePad: (uri: SharingURI) -> Unit,
 ) : ViewModel() {
 
     class Factory(
         private val pads: PadsManager,
         private val padId: String,
-        private val onPadRenamed: (name: String) -> Unit,
-        private val onPadDeleted: () -> Unit,
-        private val onSharePad: (uri: SharingURI) -> Unit,
     ) : ViewModelProvider.Factory {
 
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST") val viewModel = PadViewModel(
                 pad = pads.openPad(padId),
-                onPadRenamed = onPadRenamed,
-                onPadDeleted = onPadDeleted,
-                onSharePad = onSharePad,
+                onPadRenamed = {},
+                onPadDeleted = {},
+                onSharePad = {},
             ) as? T
             if (viewModel == null) {
                 // we were asked to instantiate an unsupported ViewModel class

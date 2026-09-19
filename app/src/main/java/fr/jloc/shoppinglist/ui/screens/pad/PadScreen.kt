@@ -92,12 +92,13 @@ internal fun PadScreen(
         factory = PadViewModel.Factory(
             padsManager,
             pad.id,
-            onPadRenamed = { name -> onPadRenamed?.invoke(name) },
-            onPadDeleted = { onPadDeleted?.invoke() },
-            onSharePad = { uri -> onSharePad?.invoke(uri) },
         ),
         key = pad.id,
     )
+    padViewModel.onPadRenamed = { name -> onPadRenamed?.invoke(name) }
+    padViewModel.onPadDeleted = { onPadDeleted?.invoke() }
+    padViewModel.onSharePad = { uri -> onSharePad?.invoke(uri) }
+
     val padName by padViewModel.name.collectAsStateWithLifecycle()
     val items by padViewModel.items.collectAsStateWithLifecycle()
     val syncStatus by padViewModel.syncStatus.collectAsStateWithLifecycle()
