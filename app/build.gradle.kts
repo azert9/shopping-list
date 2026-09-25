@@ -14,8 +14,8 @@ android {
         applicationId = "fr.jloc.shoppinglist"
         minSdk = 26
         targetSdk = 37
-        versionCode = 7
-        versionName = "0.1.0"
+        versionCode = 8
+        versionName = "0.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
