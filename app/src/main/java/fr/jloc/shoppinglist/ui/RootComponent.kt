@@ -74,7 +74,7 @@ private fun RootComponentInner(
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
     var creatingPad by rememberSaveable { mutableStateOf(false) }
-    var conditionsAccepted by rememberSaveable() { mutableStateOf(app.conditionsAccepted) }
+    var conditionsAccepted by rememberSaveable { mutableStateOf(app.conditionsAccepted) }
 
     val navEntryProvider = entryProvider {
 
@@ -167,6 +167,9 @@ private fun RootComponentInner(
             backStack = backStack,
             entryProvider = navEntryProvider,
             onBack = { popBackStack() },
+            transitionSpec = makeTransitionSpec(),
+            popTransitionSpec = makePopTransitionSpec(),
+            predictivePopTransitionSpec = makePredictivePopTransitionSpec(),
         )
     }
 
