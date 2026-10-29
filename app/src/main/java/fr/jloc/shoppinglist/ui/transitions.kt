@@ -2,7 +2,7 @@ package fr.jloc.shoppinglist.ui
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -49,6 +49,7 @@ fun <T : Any> makePredictivePopTransitionSpec(): (AnimatedContentTransitionScope
     val duration = 300
 
     return {
+        @OptIn(ExperimentalAnimationApi::class)
         ContentTransform(
             unveilIn(
                 animationSpec = tween(duration - keyframe, delayMillis = keyframe),
