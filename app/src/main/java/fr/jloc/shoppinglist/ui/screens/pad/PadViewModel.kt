@@ -114,6 +114,21 @@ class PadViewModel(
     private val _dialog = MutableStateFlow<Dialog?>(null)
     val dialog = _dialog.asStateFlow()
 
+    class ItemWantingAttention(name: String?) {
+
+        private var _item: String? = name
+
+        val name
+            get() = _item
+
+        fun acknowledge() {
+            _item = null
+        }
+    }
+
+    private val _itemWantingAttention = MutableStateFlow(ItemWantingAttention(null))
+    val itemWantingAttention = _itemWantingAttention.asStateFlow()
+
     init {
         waitEndOfSyncAndFetchItems()
     }
@@ -138,6 +153,7 @@ class PadViewModel(
                         submit = {
                             _dialog.value = null
                             pad.updateItem(name, note = note)
+                            _itemWantingAttention.value = ItemWantingAttention(name)
                             _items.value = items.copy(
                                 unchecked = items.unchecked.map {
                                     if (it.name == name) it.copy(note = note) else it
@@ -147,6 +163,7 @@ class PadViewModel(
                 } else if (items.checked.any { it.name == name }) {
                     // replacing a checked item
                     pad.updateItem(oldName = name, note = note, checked = false)
+                    _itemWantingAttention.value = ItemWantingAttention(name)
                     _items.value = items.remove(name).first.add(
                         Item(
                             name = name,
@@ -157,6 +174,7 @@ class PadViewModel(
                 } else {
                     // adding a new item
                     pad.addItem(name, note)
+                    _itemWantingAttention.value = ItemWantingAttention(name)
                     val item = Item(
                         name = name,
                         note = note,

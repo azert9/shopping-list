@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListLayoutInfo
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -22,8 +23,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -73,7 +72,6 @@ import kotlinx.coroutines.launch
 import kotlin.collections.isNotEmpty
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 internal fun PadScreen(
     padsManager: PadsManager,
     pad: Pad,
@@ -106,6 +104,8 @@ internal fun PadScreen(
 
     val selectionMode = (items?.selectedCount ?: 0) != 0
     val readOnly = items == null || syncStatus == PadViewModel.SyncStatus.RUNNING
+
+    val itemWantingAttention by padViewModel.itemWantingAttention.collectAsStateWithLifecycle()
 
     // snackbar for showing synchronization errors
 
@@ -185,6 +185,7 @@ internal fun PadScreen(
                 checkedItems = items.checked,
                 selectionMode = selectionMode,
                 readOnly = readOnly,
+                itemWantingAttention = itemWantingAttention,
                 onItemCheckedChange = { item, checked ->
                     padViewModel.setItemChecked(item, checked)
                 },
@@ -294,7 +295,6 @@ internal fun PadScreen(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun DefaultTopAppBar(
     padName: String,
     syncStatus: PadViewModel.SyncStatus?,
@@ -421,7 +421,6 @@ private fun DefaultTopAppBar(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun SelectionTopAppBar(
     selectedCount: Int,
     onClearSelection: () -> Unit,
@@ -479,11 +478,51 @@ private fun PadContent(
     checkedItems: List<PadViewModel.Item>,
     selectionMode: Boolean,
     readOnly: Boolean,
+    itemWantingAttention: PadViewModel.ItemWantingAttention,
     onItemCheckedChange: (PadViewModel.Item, Boolean) -> Unit,
     onItemEditRequested: (PadViewModel.Item) -> Unit,
     onItemSelectedChange: (PadViewModel.Item, Boolean) -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val lazyColumnState = rememberLazyListState()
+
+    // scrolling to item wanting attention
+
+    LaunchedEffect(itemWantingAttention) {
+
+        val scrollToIndex = itemWantingAttention.name?.let { name ->
+            val index = uncheckedItems.indexOfFirst { it.name == name }
+            if (index < 0) null else index
+        }
+
+        if (scrollToIndex != null) {
+
+            itemWantingAttention.acknowledge()
+
+            fun computeScrollOffset(layoutInfo: LazyListLayoutInfo): Int? {
+                val firstVisibleItem = layoutInfo.visibleItemsInfo.firstOrNull() ?: return null
+                if (scrollToIndex <= firstVisibleItem.index) {
+                    return layoutInfo.viewportStartOffset
+                }
+
+                val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull() ?: return null
+                if (scrollToIndex >= lastVisibleItem.index) {
+                    // assuming that lastVisibleItem.size is the size of our item, which currently should be true
+                    return lastVisibleItem.size - layoutInfo.viewportEndOffset
+                }
+
+                return null
+            }
+
+            computeScrollOffset(lazyColumnState.layoutInfo)?.let { scrollOffset ->
+                coroutineScope.launch {
+                    lazyColumnState.animateScrollToItem(scrollToIndex, scrollOffset)
+                }
+            }
+        }
+    }
+
+    //
 
     Box(modifier) {
 
@@ -581,7 +620,6 @@ private fun PadItemPreview() {
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun PadItem(
     item: PadViewModel.Item,
     checked: Boolean,
